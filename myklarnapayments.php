@@ -81,15 +81,20 @@ class MyKlarnaPayments extends PaymentModule
         // this part is executed only when the form is submitted
         if (Tools::isSubmit('submit' . $this->name)) {
             // retrieve the value set by the user
-            $configValue = (string) Tools::getValue('MYKLARNA_CONFIG');
+            $configValue1 = (string) Tools::getValue('MYKLARNA_CONFIG_UID');
+            $configValue2 = (string) Tools::getValue('MYKLARNA_CONFIG_PASSWD');
 
             // check that the value is valid
-            if (empty($configValue) || !Validate::isGenericName($configValue)) {
+            if (empty($configValue1) || !Validate::isGenericName($configValue1)) {
                 // invalid value, show an error
-                $output = $this->displayError($this->l('Invalid Configuration value'));
+                $output = $this->displayError($this->l('Invalid UID'));
+            } else if (empty($configValue2) || !Validate::isGenericName($configValue2)) {
+                // invalid value, show an error
+                $output = $this->displayError($this->l('Invalid Password'));
             } else {
-                // value is ok, update it and display a confirmation message
-                Configuration::updateValue('MYKLARNA_CONFIG', $configValue);
+                    // value is ok, update it and display a confirmation message
+                Configuration::updateValue('MYKLARNA_CONFIG_UID', $configValue1);
+                Configuration::updateValue('MYKLARNA_CONFIG_PASSWD', $configValue2);
                 $output = $this->displayConfirmation($this->l('Settings updated'));
             }
         }
@@ -113,8 +118,15 @@ class MyKlarnaPayments extends PaymentModule
                 'input' => [
                     [
                         'type' => 'text',
-                        'label' => $this->l('Configuration value'),
-                        'name' => 'MYKLARNA_CONFIG',
+                        'label' => $this->l('UID'),
+                        'name' => 'MYKLARNA_CONFIG_UID',
+                        'size' => 20,
+                        'required' => true,
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => $this->l('Password'),
+                        'name' => 'MYKLARNA_CONFIG_PASSWD',
                         'size' => 20,
                         'required' => true,
                     ],
@@ -139,7 +151,8 @@ class MyKlarnaPayments extends PaymentModule
         $helper->default_form_language = (int) Configuration::get('PS_LANG_DEFAULT');
 
         // Load current value into the form
-        $helper->fields_value['MYKLARNA_CONFIG'] = Tools::getValue('MYKLARNA_CONFIG', Configuration::get('MYKLARNA_CONFIG'));
+        $helper->fields_value['MYKLARNA_CONFIG_UID'] = Tools::getValue('MYKLARNA_CONFIG_UID', Configuration::get('MYKLARNA_CONFIG_UID'));
+        $helper->fields_value['MYKLARNA_CONFIG_PASSWD'] = Tools::getValue('MYKLARNA_CONFIG_PASSWD', Configuration::get('MYKLARNA_CONFIG_PASSWD'));
 
         return $helper->generateForm([$form]);
     }
