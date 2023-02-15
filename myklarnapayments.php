@@ -28,7 +28,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-class PaymentExample extends PaymentModule
+class MyKlarnaPayments extends PaymentModule
 {
     protected $_html = '';
     protected $_postErrors = array();
@@ -40,11 +40,11 @@ class PaymentExample extends PaymentModule
 
     public function __construct()
     {
-        $this->name = 'paymentexample';
+        $this->name = 'myklarnapayments';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.0';
+        $this->version = '0.0.1';
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
-        $this->author = 'PrestaShop';
+        $this->author = 'vallka';
         $this->controllers = array('validation');
         $this->is_eu_compatible = 1;
 
@@ -54,8 +54,8 @@ class PaymentExample extends PaymentModule
         $this->bootstrap = true;
         parent::__construct();
 
-        $this->displayName = $this->l('Payment Example');
-        $this->description = $this->l('Description of Payment Example');
+        $this->displayName = $this->l('MyKlarnaPayments');
+        $this->description = $this->l('Description of MyKlarnaPayments');
 
         if (!count(Currency::checkPaymentCurrencies($this->id))) {
             $this->warning = $this->l('No currency has been set for this module.');
@@ -81,10 +81,10 @@ class PaymentExample extends PaymentModule
         }
 
         $payment_options = [
-            $this->getOfflinePaymentOption(),
-            $this->getExternalPaymentOption(),
+            //$this->getOfflinePaymentOption(),
+            //$this->getExternalPaymentOption(),
             $this->getEmbeddedPaymentOption(),
-            $this->getIframePaymentOption(),
+            //$this->getIframePaymentOption(),
         ];
 
         return $payment_options;
@@ -110,7 +110,7 @@ class PaymentExample extends PaymentModule
         $offlineOption = new \PrestaShop\PrestaShop\Core\Payment\PaymentOption();
         $offlineOption->setCallToActionText($this->l('Pay offline'))
                       ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
-                      ->setAdditionalInformation($this->context->smarty->fetch('module:paymentexample/views/templates/front/payment_infos.tpl'))
+                      ->setAdditionalInformation($this->context->smarty->fetch('module:myklarnapayments/views/templates/front/payment_infos.tpl'))
                       ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/payment.jpg'));
 
         return $offlineOption;
@@ -128,7 +128,7 @@ class PaymentExample extends PaymentModule
                                 'value' =>'12345689',
                             ],
                         ])
-                       ->setAdditionalInformation($this->context->smarty->fetch('module:paymentexample/views/templates/front/payment_infos.tpl'))
+                       ->setAdditionalInformation($this->context->smarty->fetch('module:myklarnapayments/views/templates/front/payment_infos.tpl'))
                        ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/payment.jpg'));
 
         return $externalOption;
@@ -137,9 +137,9 @@ class PaymentExample extends PaymentModule
     public function getEmbeddedPaymentOption()
     {
         $embeddedOption = new \PrestaShop\PrestaShop\Core\Payment\PaymentOption();
-        $embeddedOption->setCallToActionText($this->l('Pay embedded'))
+        $embeddedOption->setCallToActionText($this->l('Pay by Klarna'))
                        ->setForm($this->generateForm())
-                       ->setAdditionalInformation($this->context->smarty->fetch('module:paymentexample/views/templates/front/payment_infos.tpl'))
+                       ->setAdditionalInformation($this->context->smarty->fetch('module:myklarnapayments/views/templates/front/payment_infos.tpl'))
                        ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/payment.jpg'));
 
         return $embeddedOption;
@@ -150,7 +150,7 @@ class PaymentExample extends PaymentModule
         $iframeOption = new \PrestaShop\PrestaShop\Core\Payment\PaymentOption();
         $iframeOption->setCallToActionText($this->l('Pay iframe'))
                      ->setAction($this->context->link->getModuleLink($this->name, 'iframe', array(), true))
-                     ->setAdditionalInformation($this->context->smarty->fetch('module:paymentexample/views/templates/front/payment_infos.tpl'))
+                     ->setAdditionalInformation($this->context->smarty->fetch('module:myklarnapayments/views/templates/front/payment_infos.tpl'))
                      ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/payment.jpg'));
 
         return $iframeOption;
@@ -174,6 +174,6 @@ class PaymentExample extends PaymentModule
             'years' => $years,
         ]);
 
-        return $this->context->smarty->fetch('module:paymentexample/views/templates/front/payment_form.tpl');
+        return $this->context->smarty->fetch('module:myklarnapayments/views/templates/front/payment_form.tpl');
     }
 }
