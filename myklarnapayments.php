@@ -70,6 +70,81 @@ class MyKlarnaPayments extends PaymentModule
         return true;
     }
 
+    /**
+     * This method handles the module's configuration page
+     * @return string The page's HTML content 
+     */
+    public function getContent()
+    {
+        $output = '';
+
+        // this part is executed only when the form is submitted
+        if (Tools::isSubmit('submit' . $this->name)) {
+            // retrieve the value set by the user
+            $configValue = (string) Tools::getValue('MYKLARNA_CONFIG');
+
+            // check that the value is valid
+            if (empty($configValue) || !Validate::isGenericName($configValue)) {
+                // invalid value, show an error
+                $output = $this->displayError($this->l('Invalid Configuration value'));
+            } else {
+                // value is ok, update it and display a confirmation message
+                Configuration::updateValue('MYKLARNA_CONFIG', $configValue);
+                $output = $this->displayConfirmation($this->l('Settings updated'));
+            }
+        }
+
+        // display any message, then the form
+        return $output . $this->displayForm();
+    }
+
+    /**
+     * Builds the configuration form
+     * @return string HTML code
+     */
+    public function displayForm()
+    {
+        // Init Fields form array
+        $form = [
+            'form' => [
+                'legend' => [
+                    'title' => $this->l('Settings'),
+                ],
+                'input' => [
+                    [
+                        'type' => 'text',
+                        'label' => $this->l('Configuration value'),
+                        'name' => 'MYKLARNA_CONFIG',
+                        'size' => 20,
+                        'required' => true,
+                    ],
+                ],
+                'submit' => [
+                    'title' => $this->l('Save'),
+                    'class' => 'btn btn-default pull-right',
+                ],
+            ],
+        ];
+
+        $helper = new HelperForm();
+
+        // Module, token and currentIndex
+        $helper->table = $this->table;
+        $helper->name_controller = $this->name;
+        $helper->token = Tools::getAdminTokenLite('AdminModules');
+        $helper->currentIndex = AdminController::$currentIndex . '&' . http_build_query(['configure' => $this->name]);
+        $helper->submit_action = 'submit' . $this->name;
+
+        // Default language
+        $helper->default_form_language = (int) Configuration::get('PS_LANG_DEFAULT');
+
+        // Load current value into the form
+        $helper->fields_value['MYKLARNA_CONFIG'] = Tools::getValue('MYKLARNA_CONFIG', Configuration::get('MYKLARNA_CONFIG'));
+
+        return $helper->generateForm([$form]);
+    }
+
+
     public function hookPaymentOptions($params)
     {
         if (!$this->active) {
