@@ -137,7 +137,7 @@ class MyKlarnaPayments extends PaymentModule
     public function getEmbeddedPaymentOption()
     {
         $embeddedOption = new \PrestaShop\PrestaShop\Core\Payment\PaymentOption();
-        $embeddedOption->setCallToActionText($this->l('Pay by Klarna in installments'))
+        $embeddedOption->setCallToActionText($this->l('Pay by Klarna in installments.'))
                        ->setForm($this->generateForm())
                        ->setAdditionalInformation($this->context->smarty->fetch('module:myklarnapayments/views/templates/front/payment_infos.tpl'))
                        ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/payment.jpg'));
