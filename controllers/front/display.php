@@ -18,3 +18,4 @@ class myklarnapaymentsdisplayModuleFrontController extends ModuleFrontController
         $this->context->smarty->assign('myklarnapayments',$this->my_content);
         $this->setTemplate('module:myklarnapayments/views/templates/front/display.tpl');
     }
+}
